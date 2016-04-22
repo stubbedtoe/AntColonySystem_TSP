@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public class ACS_TSP{
-	
+
 	/* chosen constants */
 	public static final double BETA = 2.0;
 	public static final double PO = 0.1;
@@ -14,17 +14,17 @@ public class ACS_TSP{
 	public static double TAU_0;
 	public static double THRESH = 0.000001;
 
-	public static double [][] adjacencyMatrix; 
+	public static double [][] adjacencyMatrix;
 	public static double [][] pheromone;
 
 	public static void main(String[] args) {
 
 		// load the town information from csv file using the given FileIO class
-		FileIO reader = new FileIO(); 
+		FileIO reader = new FileIO();
 		String name = "towns.csv";
 		Q_0 = 0.8;
 		T_MAX = 10000;
-	
+		System.out.println(args.length);
  		for(int i=0; i<args.length; i++){
  			try{
 	 			if (i==0 && args[i].equals("0"))
@@ -34,17 +34,17 @@ public class ACS_TSP{
 	 			else if	(i==1)
 	 				Q_0 = Double.parseDouble(args[i]);
 	 			else if (i==2)
-	 				T_MAX = Integer.parseInt(args[2]);
+	 				T_MAX = Integer.parseInt(args[i]);
 	 			else
 	 				printhelp();
 	 		}catch (Exception e){
 	 			printhelp();
 	 			System.exit(0);
-	 		}	 
+	 		}
  		}
 
  		System.out.println("\n"+T_MAX+" times; Q_0="+Q_0+"; on "+name+"\n");
- 		
+
  		String[] twns = reader.load(name);
 
  		n = twns.length;
@@ -102,7 +102,7 @@ public class ACS_TSP{
 
  				//build tour Tkt by applying n-1 times the following steps
  				t_k[k] = new Tour(towns[(int)(Math.random()*n)]);
- 				
+
 
 				for(int i=0; i<n-1; i++){
 
@@ -117,9 +117,9 @@ public class ACS_TSP{
 
 						try{
 							if(args[3].equals("-r"))
-								q = Math.random();	
+								q = Math.random();
 						}catch (Exception e){
-						
+
 						}
 
 						int index;
@@ -128,8 +128,8 @@ public class ACS_TSP{
 							index = maxArg(unvisited, t_k[k].current());
 						else
 							index = probability(unvisited, t_k[k].current()); //probability formula
-						
-						
+
+
 						next = unvisited[index];
 
 					}else{
@@ -138,7 +138,7 @@ public class ACS_TSP{
 					}
 
 					applyPheromone(t_k[k].current(), next);
-					t_k[k].visit(next);				
+					t_k[k].visit(next);
 
 				}
 
@@ -167,13 +167,13 @@ public class ACS_TSP{
  				double old = pheromone[from][to];
  				pheromone[from][to] = (1 - PO) * old + (PO * (1.0 / shortest));
  				pheromone[to][from] = pheromone[from][to];
- 				
+
  				from = second.visited[i].id-1;
  				to = second.visited[i+1].id-1;
  				old = pheromone[from][to];
  				pheromone[from][to] = (1 - PO) * old + (PO * (1.0 / shortest));
  				pheromone[to][from] = pheromone[from][to];
- 				
+
  			}//end update
 
 
@@ -191,7 +191,7 @@ public class ACS_TSP{
 		System.out.println("arg1=1\tuse towns.csv; 80 towns around the Ireland. Solutions can be visualised with my tool: http://www.cs.nuim.ie/~ahealy/tsp_checker/");
 		System.out.println("\narg2=(0.0 <= num < 1.0)\tthis parameter controls the amount of exploration");
 		System.out.println("\narg3=~(5000 <= num < 20000)\tthis parameter is the number of iterations the colony finds a path");
-		
+
 
 	}
 
@@ -210,7 +210,7 @@ public class ACS_TSP{
 			if(!tr.visited(candidates[i])){
 				t[j] = candidates[i];
 				j++;
-			}		
+			}
 		}
 		return t;
 	}
@@ -218,11 +218,11 @@ public class ACS_TSP{
 	public static void applyPheromone(Town from, Town to){
 		double old = pheromone[from.id-1][to.id-1];
 		pheromone[from.id-1][to.id-1] = (1 - PO) * old + (PO * TAU_0);
-		pheromone[to.id-1][from.id-1] = pheromone[from.id-1][to.id-1]; 
+		pheromone[to.id-1][from.id-1] = pheromone[from.id-1][to.id-1];
 	}
 
 	public static int maxArg(Town [] candiateList, Town i){
-	
+
 		double d = -10.0;
 		int index = -1;
 		for(int j=0; j<candiateList.length; j++){
@@ -259,7 +259,7 @@ public class ACS_TSP{
 		//System.out.println("\n");
 
 		for(int j=0; j<candiateList.length; j++){
-			
+
 			double p = ph(i, candiateList[j])/summation;
 
 			int add = (int)(SIZE*p);
@@ -274,7 +274,7 @@ public class ACS_TSP{
 				pot[start] = j;
 				start++;
 			}
-			
+
 		}
 
 		int r = (int)(Math.random()*SIZE);
